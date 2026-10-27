@@ -1,0 +1,23 @@
+services:
+  # Service 1: The Redis In-Memory State Store
+  redis:
+    image: redis:alpine
+    container_name: siam-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  # Service 2: Siam Food B2B Copilot
+  copilot:
+    build: .
+    image: siam-food-copilot:v1
+    container_name: siam-copilot
+    ports:
+      - "8080:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    restart: always
